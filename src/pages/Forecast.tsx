@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import ForecastTable from "../components/ForecastTable";
 import type { PredictResponse } from "../types/Forecast";
 import { predictSales } from "../api/forecast.service";
 import { ForecastChart } from "../components/ForecastChart";
+import { getLastTrainingDate } from "../api/date.service";
 
 type FormValues = {
   days?: number;
@@ -16,14 +17,40 @@ export default function Forecast() {
   const [forecast, setForecast] = useState<PredictResponse | undefined>(
     undefined
   );
+  const [lastTrainingDate, setLastTrainingDate] = useState<string | undefined>(
+    undefined
+  );
 
   const {
     register,
     handleSubmit,
     getValues,
+    setValue,
     formState: { errors },
     reset,
   } = useForm<FormValues>();
+
+  useEffect(() => {
+    const getTrainingDate = async () => {
+      try {
+        const date = (await getLastTrainingDate()).last_training_date;
+        if (date) {
+          const trainingDate = new Date(date);
+
+          trainingDate.setDate(trainingDate.getDate() + 1);
+
+          const adjustedDate = trainingDate.toISOString().split("T")[0];
+
+          setLastTrainingDate(adjustedDate);
+          setValue("start", adjustedDate);
+        }
+      } catch (error) {
+        console.error("Error fetching last training date:", error);
+      }
+    };
+
+    getTrainingDate();
+  }, [setValue]);
 
   const onSubmit = async (values: FormValues) => {
     try {
@@ -98,11 +125,14 @@ export default function Forecast() {
                 <div className="flex items-center gap-4">
                   <input
                     type="date"
-                    className={`p-3 rounded-lg bg-[#63AEAB]/40 text-gray-700 font-semibold w-1/2
+                    className={`disabled p-3 rounded-lg bg-[#63AEAB]/40 text-gray-700 font-semibold w-1/2
                       ${errors.start ? "border border-red-500" : ""}`}
                     {...register("start", {
                       required: "Debes seleccionar una fecha inicial.",
                     })}
+                    value={lastTrainingDate}
+                    min={lastTrainingDate}
+                    disabled
                   />
                   {(errors.start || errors.end) && (
                     <p className="absolute text-red-600 text-sm font-semibold -bottom-5 left-0">
@@ -125,6 +155,7 @@ export default function Forecast() {
                         );
                       },
                     })}
+                    min={lastTrainingDate}
                   />
                 </div>
 

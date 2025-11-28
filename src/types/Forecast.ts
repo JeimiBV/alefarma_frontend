@@ -7,7 +7,6 @@ export interface PredictByRangeRequest {
   end: string;
 }
 
-
 export interface PredictionItem {
   ds: string;
   yhat: number;
@@ -17,4 +16,8 @@ export interface PredictionItem {
 
 export interface PredictResponse {
   forecast: PredictionItem[];
+}
+
+export interface LastTrainingResponse {
+  last_training_date: string;
 }

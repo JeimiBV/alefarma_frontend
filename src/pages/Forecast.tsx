@@ -15,10 +15,10 @@ type FormValues = {
 export default function Forecast() {
   const [mode, setMode] = useState<"day" | "range">("day");
   const [forecast, setForecast] = useState<PredictResponse | undefined>(
-    undefined
+    undefined,
   );
   const [lastTrainingDate, setLastTrainingDate] = useState<string | undefined>(
-    undefined
+    undefined,
   );
 
   const {
@@ -26,9 +26,11 @@ export default function Forecast() {
     handleSubmit,
     getValues,
     setValue,
-    formState: { errors },
+    formState: { errors, isValid },
     reset,
-  } = useForm<FormValues>();
+  } = useForm<FormValues>({
+    mode: "onChange",
+  });
 
   useEffect(() => {
     const getTrainingDate = async () => {
@@ -170,7 +172,15 @@ export default function Forecast() {
 
           <button
             type="submit"
-            className="font-semibold py-2.5 rounded-md text-white w-1/2 hover:bg-[#7abab8] hover:cursor-pointer transition-colors bg-[#63AEAB]"
+            disabled={!isValid}
+            className={`
+    font-semibold py-2.5 rounded-md text-white w-1/2 transition-colors
+    ${
+      isValid
+        ? "bg-[#63AEAB] hover:bg-[#7abab8] hover:cursor-pointer"
+        : "bg-gray-400 cursor-not-allowed"
+    }
+  `}
           >
             Generar Predicción
           </button>

@@ -28,7 +28,7 @@ export default function Home() {
             </a>
 
             <a
-              href="/about"
+              href="#about"
               className="flex items-center gap-2 text-[#63AEAB] font-semibold hover:text-[#39747D] transition-colors"
             >
               Acerca del Proyecto →
@@ -47,7 +47,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-gray-100 rounded-xl p-8">
+      <section id="about" className="bg-gray-100 rounded-xl p-8">
         <h2 className="text-center text-3xl font-bold text-gray-900">
           ¿Qué ofrece este sistema?
         </h2>

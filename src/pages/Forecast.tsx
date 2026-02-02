@@ -20,6 +20,7 @@ export default function Forecast() {
   const [lastTrainingDate, setLastTrainingDate] = useState<string | undefined>(
     undefined,
   );
+  const currentDate = new Date().toISOString().split("T")[0];
 
   const {
     register,
@@ -132,9 +133,8 @@ export default function Forecast() {
                     {...register("start", {
                       required: "Debes seleccionar una fecha inicial.",
                     })}
-                    value={lastTrainingDate}
+                    value={currentDate}
                     min={lastTrainingDate}
-                    disabled
                   />
                   {(errors.start || errors.end) && (
                     <p className="absolute text-red-600 text-sm font-semibold -bottom-5 left-0">
